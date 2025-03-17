@@ -28,13 +28,6 @@ pipeline {
                 sh 'cd TP5 && npm run build'  
             }
         }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application...'
-                sh 'cd TP5 && ./deploy.sh'  
-            }
-        }
     }
 
     post {
