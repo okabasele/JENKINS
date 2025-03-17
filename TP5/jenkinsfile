@@ -1,56 +1,48 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_ENV = 'development'
-    }
-
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js dependencies...'
-                sh 'cd TP5 && npm install'
+                sh 'cd TP5 && npm install'  
             }
         }
 
         stage('Run Tests') {
             steps {
                 echo 'Running unit tests...'
-                sh 'cd TP5 && npm test'
+                sh 'cd TP5 && npm test'  
             }
         }
 
         stage('Build Project') {
             steps {
-                echo 'Building the project...'
-                sh 'cd TP5 && npm run build'
+                echo 'Building project...'
+                sh 'cd TP5 && npm run build'  
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
-                // Ici, vous pouvez ajouter un script de déploiement personnalisé
+                sh 'cd TP5 && ./deploy.sh'  
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline executed successfully!'
+        always {
+            echo 'Cleaning up...'
         }
         failure {
-            echo 'Pipeline execution failed!'
+            echo 'Build failed...'
         }
     }
-/*
-    post {
-    success {
-        slackSend (channel: '#ci-cd', message: "✅ Pipeline réussi : ${env.JOB_NAME} #${env.BUILD_NUMBER}")
-    }
-    failure {
-        slackSend (channel: '#ci-cd', message: "❌ Échec du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}")
-    }
-}
-*/
 }
